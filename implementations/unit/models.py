@@ -39,12 +39,12 @@ class ResidualBlock(nn.Cell):
             nn.ReflectionPad2d(1),
             nn.Conv2d(features, features, 3, pad_mode='pad',
                       weight_init=init.Normal(0.02, 0.0)),
-            nn.BatchNorm2d(features, affine=False),
+            nn.InstanceNorm2d(features, affine=False),
             nn.ReLU(),
             nn.ReflectionPad2d(1),
             nn.Conv2d(features, features, 3, pad_mode='pad',
                       weight_init=init.Normal(0.02, 0.0)),
-            nn.BatchNorm2d(features, affine=False),
+            nn.InstanceNorm2d(features, affine=False),
         ]
 
         self.conv_block = nn.SequentialCell(*conv_block)
@@ -64,7 +64,7 @@ class Encoder(nn.Cell):
             nn.ReflectionPad2d(3),
             nn.Conv2d(in_channels, dim, 7, pad_mode='pad',
                       weight_init=init.Normal(0.02, 0.0)),
-            nn.BatchNorm2d(64, affine=False),
+            nn.InstanceNorm2d(64, affine=False),
             nn.LeakyReLU(0.2),
         ]
 
@@ -74,7 +74,7 @@ class Encoder(nn.Cell):
                 nn.Conv2d(dim, dim * 2, 4, stride=2,
                           pad_mode='pad', padding=1,
                           weight_init=init.Normal(0.02, 0.0)),
-                nn.BatchNorm2d(dim * 2, affine=False),
+                nn.InstanceNorm2d(dim * 2, affine=False),
                 nn.ReLU()
             ]
             dim *= 2
@@ -118,7 +118,7 @@ class Generator(nn.Cell):
                 nn.Conv2dTranspose(dim, dim // 2, 4, stride=2,
                                    pad_mode='pad', padding=1,
                                    weight_init=init.Normal(0.02, 0.0)),
-                nn.BatchNorm2d(dim // 2, affine=False),
+                nn.InstanceNorm2d(dim // 2, affine=False),
                 nn.LeakyReLU(0.2)
             ]
             dim = dim // 2
@@ -161,7 +161,7 @@ class Discriminator(nn.Cell):
                           weight_init=init.Normal(0.02, 0.0))
             ]
             if normalize:
-                layers.append(nn.BatchNorm2d(out_filters, affine=False))
+                layers.append(nn.InstanceNorm2d(out_filters, affine=False))
             layers.append(nn.LeakyReLU(0.2))
             return layers
 
